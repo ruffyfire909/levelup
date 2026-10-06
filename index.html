@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Level Up – Dein System</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#eef1fb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070a17" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Level Up">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#eef1fb; --panel:#ffffff; --panel2:#e6eaf8; --line:#b8c3ee;
+  --text:#141a3a; --muted:#566096; --accent:#3a62e8; --on-accent:#ffffff;
+  --glow:rgba(58,98,232,.28); --good:#168a46;
+  --learn:#3a62e8; --med:#7c4ddb; --sport:#cf4f1b;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#070a17; --panel:#0e1430; --panel2:#161e44; --line:#2b3b82;
+    --text:#e8edff; --muted:#93a0d4; --accent:#6b96ff; --on-accent:#06102c;
+    --glow:rgba(107,150,255,.4); --good:#4ade80;
+    --learn:#6b96ff; --med:#b497ff; --sport:#ff8d5e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#070a17; --panel:#0e1430; --panel2:#161e44; --line:#2b3b82;
+  --text:#e8edff; --muted:#93a0d4; --accent:#6b96ff; --on-accent:#06102c;
+  --glow:rgba(107,150,255,.4); --good:#4ade80;
+  --learn:#6b96ff; --med:#b497ff; --sport:#ff8d5e;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{max-width:560px;margin:0 auto;padding:14px 14px 100px}
+.c-evening{--c:var(--accent)}
+.c-learn{--c:var(--learn)} .c-med{--c:var(--med)} .c-sport{--c:var(--sport)}
+
+.win{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;margin-bottom:14px;box-shadow:0 0 22px -10px var(--glow)}
+.win::before,.win::after{content:"";position:absolute;width:12px;height:12px;border:2px solid var(--accent);pointer-events:none}
+.win::before{left:-2px;top:-2px;border-right:0;border-bottom:0;border-radius:6px 0 0 0}
+.win::after{right:-2px;bottom:-2px;border-left:0;border-top:0;border-radius:0 0 6px 0}
+.hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:8px}
+.title{font-family:Rajdhani,"Arial Narrow",system-ui,sans-serif;font-weight:700;font-size:1.2rem;color:var(--accent);letter-spacing:.02em}
+.muted{color:var(--muted);font-size:.9rem}
+.hello{margin:4px 2px 14px}
+.hello b{display:block;font-family:Rajdhani,"Arial Narrow",system-ui,sans-serif;font-size:1.6rem;line-height:1.1}
+
+.rankrow{display:flex;align-items:center;gap:18px;margin:6px 0 14px}
+.rank{width:60px;height:60px;flex:none;border:2px solid var(--rc);color:var(--rc);display:grid;place-items:center;transform:rotate(45deg);box-shadow:0 0 18px -2px var(--rc),inset 0 0 12px -6px var(--rc);margin:6px 8px 6px 6px}
+.rank span{transform:rotate(-45deg);font:700 2rem/1 Rajdhani,"Arial Narrow",system-ui,sans-serif}
+.rinfo{flex:1;min-width:0}
+.rinfo b{display:block;font-family:Rajdhani,"Arial Narrow",system-ui,sans-serif;font-size:1.35rem;line-height:1.1}
+.lv{text-align:right}
+.lv small{display:block;color:var(--muted);font-size:.8rem}
+.lv b{font-family:Rajdhani,"Arial Narrow",system-ui,sans-serif;font-size:2.6rem;line-height:1}
+
+.bar{height:8px;background:var(--panel2);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--c,var(--accent));transition:width .45s ease;border-radius:4px}
+.xp{height:12px}
+.xpt{display:flex;justify-content:space-between;margin-top:6px;font-size:.85rem;color:var(--muted)}
+
+.goal{margin-bottom:14px}
+.goal:last-child{margin-bottom:0}
+.gl{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px}
+.gl b{display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none;display:inline-block}
+.gw{font-size:.82rem;color:var(--muted);margin-top:5px}
+.done-flag{color:var(--good);font-weight:600}
+
+.quest{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--panel2)}
+.quest:first-of-type{border-top:0}
+.qt{flex:1;min-width:0}
+.qt b{display:block;font-weight:600;overflow-wrap:anywhere}
+.qt small{color:var(--muted)}
+.quest.done .qt b{text-decoration:line-through;color:var(--muted)}
+.quest.done .xpgot{color:var(--good);font-weight:700;white-space:nowrap}
+.ib{width:44px;height:44px;border-radius:6px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-size:1.1rem;flex:none}
+.ib.go{background:var(--c);border-color:var(--c);color:var(--on-accent)}
+
+.btn{min-height:44px;border:1px solid var(--line);background:var(--panel2);border-radius:6px;padding:0 14px;font-weight:600;cursor:pointer}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.danger{border-color:#d33;color:#d33}
+.btn[disabled]{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.row .btn{flex:1;min-width:110px}
+.empty{padding:6px 0;color:var(--muted)}
+
+.banner{border:1px solid var(--good);color:var(--good);border-radius:6px;padding:10px 12px;margin-bottom:14px;font-weight:600}
+.hint{border:1px dashed var(--line);border-radius:6px;padding:10px 12px;margin-bottom:14px;color:var(--muted);font-size:.92rem}
+
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:10}
+nav button{flex:1;min-height:58px;background:none;border:0;border-top:3px solid transparent;color:var(--muted);font-weight:600;cursor:pointer;font-size:.95rem}
+nav button[aria-current="page"]{color:var(--accent);border-top-color:var(--accent)}
+
+.ov{position:fixed;left:0;right:0;top:0;bottom:0;padding-top:env(safe-area-inset-top,0px);background:rgba(3,6,20,.62);display:none;z-index:30}
+.ov.on{display:flex}
+#sheet{align-items:flex-end;justify-content:center}
+#sheetP{width:100%;max-width:560px;max-height:88%;overflow:auto;background:var(--panel);border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+#timerOv{align-items:center;justify-content:center;padding:16px;background:rgba(3,6,20,.86)}
+#timerOv .win{width:100%;max-width:420px;margin:0;text-align:center}
+.big{font:700 3.6rem/1.1 Rajdhani,"Arial Narrow",system-ui,sans-serif;margin:10px 0 12px;font-variant-numeric:tabular-nums}
+.sh-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.x{width:44px;height:44px;background:none;border:0;font-size:1.2rem;cursor:pointer;color:var(--muted)}
+.gh{display:flex;align-items:center;gap:8px;margin:16px 0 6px;font-size:1rem}
+.opt{display:flex;justify-content:space-between;gap:10px;width:100%;min-height:46px;align-items:center;text-align:left;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 12px;margin-bottom:6px;cursor:pointer}
+.opt small{color:var(--muted);white-space:nowrap}
+.opt.on{border-color:var(--c);opacity:.55}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.chip{min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-weight:600}
+.chip.on{background:var(--c);border-color:var(--c);color:var(--on-accent)}
+label{display:block;margin:10px 0 0;font-size:.9rem;color:var(--muted)}
+input[type=text],input[type=number],select,textarea{width:100%;min-height:44px;margin-top:4px;padding:8px 10px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text)}
+textarea{min-height:140px;font:13px/1.4 ui-monospace,Menlo,Consolas,monospace}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sep{height:1px;background:var(--panel2);margin:16px 0}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 10px);background:var(--panel);border:1px solid var(--accent);border-radius:6px;padding:10px 16px;z-index:40;box-shadow:0 6px 24px rgba(0,0,0,.35);display:none;max-width:92%;text-align:center;font-weight:600}
+.toast.on{display:block}
+
+.stat{margin-bottom:14px}
+.wk{display:flex;gap:6px;align-items:flex-end;height:140px}
+.wk .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%}
+.stack{flex:1;width:100%;display:flex;flex-direction:column-reverse;background:var(--panel2);border-radius:4px;overflow:hidden}
+.stack i{display:block;width:100%;background:var(--c)}
+.wk span{font-size:.78rem;color:var(--muted)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:.85rem;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.logrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--panel2)}
+.logrow:first-of-type{border-top:0}
+.logrow .qt small{display:block}
+.pool{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--panel2)}
+.pool:first-of-type{border-top:0}
+.pool span{flex:1;min-width:0;overflow-wrap:anywhere}
+@media (prefers-reduced-motion: reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main class="app" id="app"></main>
+<nav aria-label="Hauptnavigation">
+  <button data-act="tab" data-t="today">Heute</button>
+  <button data-act="tab" data-t="status">Status</button>
+  <button data-act="tab" data-t="settings">Einstellungen</button>
+</nav>
+<div class="ov" id="sheet" role="dialog" aria-modal="true"><div id="sheetP"></div></div>
+<div class="ov" id="timerOv" role="dialog" aria-modal="true">
+  <div class="win" id="timerWin">
+    <div class="title">[Quest läuft]</div>
+    <div id="tTitle" style="margin-top:6px;font-weight:600"></div>
+    <div class="big" id="tm">00:00</div>
+    <div class="bar" id="tBarW"><i id="tb"></i></div>
+    <div class="muted" id="tSub" style="margin-top:8px"></div>
+    <div class="row">
+      <button class="btn pri" data-act="timerStop">Abschließen</button>
+      <button class="btn" data-act="timerCancel">Verwerfen</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+'use strict';
+const KEY='levelup-system-v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const dk=(d=new Date())=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const dayOffset=n=>{const d=new Date();d.setDate(d.getDate()-n);return dk(d)};
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+
+const CATS={
+  learn:{n:'Lernen',stat:'Intellekt',rate:1},
+  med:{n:'Meditation',stat:'Geist',rate:2},
+  sport:{n:'Sport',stat:'Körper',rate:1.5}
+};
+const CK=Object.keys(CATS);
+const WINDOW_BONUS=1.2, CLEAR_BONUS=50;
+const EVENING_XP={mag:10,diary:25};
+const MOODS=['😞','😕','😐','🙂','😄'];
+
+function defaults(){
+  let n=0;const q=(cat,title,min)=>({id:'q'+(++n),cat,title,min});
+  return {
+    v:1,name:'David',theme:'auto',
+    goals:{learn:90,med:10,sport:30},
+    windows:{learn:[8,20],med:[6,22],sport:[7,21]},
+    pool:[
+      q('learn','Fokusblock (25 Min)',25),
+      q('learn','Elektrotechnik: Aufgaben üben',45),
+      q('learn','Mechatronik: Thema nacharbeiten',30),
+      q('learn','Technikerarbeit voranbringen',60),
+      q('learn','Karteikarten / Wiederholen',15),
+      q('med','Atemübung (5 Min)',5),
+      q('med','Meditation (10 Min)',10),
+      q('med','Lange Meditation (20 Min)',20),
+      q('sport','Mobility / Dehnen (10 Min)',10),
+      q('sport','Spaziergang (20 Min)',20),
+      q('sport','Kraft zuhause (30 Min)',30),
+      q('sport','Training (45 Min)',45)
+    ],
+    nextId:n+1,
+    picks:{date:'',ids:[],done:[]},
+    log:[],diary:[],timer:null
+  };
+}
+let S=load();
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw){const s=JSON.parse(raw);if(s&&s.v===1)return Object.assign(defaults(),s)}
+  }catch(e){}
+  return defaults();
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ---------- Berechnungen ---------- */
+const minsOn=(date,cat)=>S.log.reduce((a,l)=>a+(l.date===date&&l.cat===cat?l.min:0),0);
+const metCount=date=>CK.filter(c=>minsOn(date,c)>=S.goals[c]).length;
+const totalXP=()=>S.log.reduce((a,l)=>a+l.xp,0);
+function levelInfo(xp){
+  let l=1,need=150;
+  while(xp>=need){xp-=need;l++;need=150+40*(l-1)}
+  return {l,cur:xp,need};
+}
+const RANKS=[[40,'S','Monarch','#ffd166'],[28,'A','Elite','#ff8d5e'],[18,'B','Veteran','#b497ff'],[10,'C','Krieger','#6b96ff'],[5,'D','Aufsteiger','#4ade80'],[1,'E','Anwärter','#93a0d4']];
+const rankOf=l=>{const r=RANKS.find(r=>l>=r[0]);return {k:r[1],t:r[2],c:r[3]}};
+function nextRank(l){const up=RANKS.slice().reverse().find(r=>r[0]>l);return up?{k:up[1],at:up[0]}:null}
+function inWindow(cat,d=new Date()){
+  const h=d.getHours()+d.getMinutes()/60,[a,b]=S.windows[cat];
+  return h>=a&&h<b;
+}
+const qxp=(cat,min)=>Math.round(min*CATS[cat].rate*(inWindow(cat)?WINDOW_BONUS:1));
+function streak(){
+  if(!S.log.length)return 0;
+  const first=S.log.reduce((m,l)=>l.date<m?l.date:m,S.log[0].date);
+  let s=metCount(dk())>=2?1:0,lastMiss=-99;
+  for(let i=1;i<400;i++){
+    const d=dayOffset(i);if(d<first)break;
+    if(metCount(d)>=2)s++;
+    else if(i-lastMiss>=7)lastMiss=i; /* ein Joker pro Woche */
+    else break;
+  }
+  return s;
+}
+function ensurePicks(){
+  const d=dk();
+  if(S.picks.date!==d)S.picks={date:d,ids:[],done:[]};
+}
+function fmtMin(m){return m<60?m+' Min':(m/60).toFixed(1).replace('.',',')+' Std'}
+function fmtClock(ms){
+  const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),r=s%60;
+  return (h?h+':'+pad(m):pad(m))+':'+pad(r);
+}
+
+/* ---------- Aktionen ---------- */
+function addLog(o){
+  const now=new Date();
+  const before=levelInfo(totalXP()).l;
+  const bonus=inWindow(o.cat,now);
+  const base=Math.round(o.min*CATS[o.cat].rate);
+  const xp=bonus?Math.round(base*WINDOW_BONUS):base;
+  S.log.push({id:now.getTime().toString(36)+Math.random().toString(36).slice(2,6),t:now.getTime(),date:dk(now),cat:o.cat,min:o.min,xp,title:o.title||CATS[o.cat].n,bonus});
+  let cleared=false;const d=dk(now);
+  if(CK.every(c=>minsOn(d,c)>=S.goals[c])&&!S.log.some(l=>l.date===d&&l.cat==='bonus')){
+    S.log.push({id:'b'+now.getTime().toString(36),t:now.getTime()+1,date:d,cat:'bonus',min:0,xp:CLEAR_BONUS,title:'Tages-Dungeon geklärt',bonus:false});
+    cleared=true;
+  }
+  const after=levelInfo(totalXP()).l;
+  save();
+  return {xp,bonus,cleared,leveled:after>before?after:0};
+}
+const doneToday=cat=>S.log.some(l=>l.date===dk()&&l.cat===cat);
+function addSpecial(cat,title){
+  const now=new Date(),before=levelInfo(totalXP()).l,xp=EVENING_XP[cat];
+  S.log.push({id:now.getTime().toString(36)+Math.random().toString(36).slice(2,6),t:now.getTime(),date:dk(now),cat,min:0,xp,title,bonus:false});
+  const after=levelInfo(totalXP()).l;save();
+  return {xp,bonus:false,cleared:false,leveled:after>before?after:0};
+}
+let dMood=3;
+function diarySheet(date){
+  const e=S.diary.find(x=>x.date===date)||{mood:3,a:'',b:'',c:''};
+  dMood=e.mood;
+  const label=new Date(date+'T12:00:00').toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
+  return `<div class="sh-h"><span class="title">[Tagebuch]</span><button class="x" data-act="close" aria-label="Schließen">✕</button></div>
+  <p class="muted" style="margin-top:0">${label}. Wie fühlst du dich?</p>
+  <div class="chips c-evening" id="mchips">${MOODS.map((m,i)=>`<button class="chip ${i+1===dMood?'on':''}" data-act="mood" data-m="${i+1}" aria-label="Stimmung ${i+1} von 5">${m}</button>`).join('')}</div>
+  <label>Wie war dein Tag?<textarea id="dA" style="min-height:100px">${esc(e.a)}</textarea></label>
+  <label>Was lief gut? Wofür bist du dankbar?<textarea id="dB" style="min-height:80px">${esc(e.b)}</textarea></label>
+  <label>Was nimmst du dir für morgen vor?<textarea id="dC" style="min-height:80px">${esc(e.c)}</textarea></label>
+  <div class="row"><button class="btn pri" data-act="savediary" data-date="${date}">Eintrag speichern</button></div>`;
+}
+function notify(r){
+  if(r.leveled){
+    const R=rankOf(r.leveled);
+    openSheet(`<div class="sh-h"><span class="title">[Level Up]</span><button class="x" data-act="close" aria-label="Schließen">✕</button></div>
+      <div class="rankrow" style="justify-content:center"><div class="rank" style="--rc:${R.c}"><span>${R.k}</span></div></div>
+      <p style="text-align:center;margin:0"><b style="font-size:1.4rem">Level ${r.leveled}</b><br>Rang ${R.k} – ${R.t}</p>
+      <p class="muted" style="text-align:center">${r.cleared?'Tages-Dungeon geklärt: +'+CLEAR_BONUS+' XP Bonus. ':''}Gut gemacht.</p>
+      <div class="row"><button class="btn pri" data-act="close">Weiter</button></div>`);
+  }else{
+    toast(`+${r.xp} XP${r.bonus?' (Zeitfenster-Bonus)':''}${r.cleared?' – Tages-Dungeon geklärt! +'+CLEAR_BONUS+' XP':''}`);
+  }
+}
+let toastT;
+function toast(m){
+  const t=$('#toast');t.textContent=m;t.classList.add('on');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),3200);
+}
+function startTimer(cat,title,qid,target){
+  if(S.timer){toast('Es läuft schon ein Timer.');return}
+  S.timer={cat,title,qid:qid||null,start:Date.now(),target:target||25};
+  save();closeSheet();syncTimer();
+}
+function stopTimer(){
+  const t=S.timer;if(!t)return;
+  const min=Math.max(1,Math.round((Date.now()-t.start)/60000));
+  S.timer=null;
+  ensurePicks();
+  const r=addLog({cat:t.cat,min,title:t.title});
+  if(t.qid&&min>=t.target&&!S.picks.done.includes(t.qid))S.picks.done.push(t.qid);
+  save();syncTimer();render();notify(r);
+}
+function syncTimer(){
+  const on=!!S.timer;
+  $('#timerOv').classList.toggle('on',on);
+  if(on){
+    $('#timerWin').className='win c-'+S.timer.cat;
+    $('#tTitle').textContent=S.timer.title;
+    updateTimer();
+  }
+}
+function updateTimer(){
+  const t=S.timer;if(!t)return;
+  const ms=Date.now()-t.start,goal=t.target*60000;
+  $('#tm').textContent=fmtClock(ms);
+  $('#tb').style.width=Math.min(100,ms/goal*100)+'%';
+  $('#tb').style.background='var(--c)';
+  $('#tSub').textContent=ms>=goal?'Ziel erreicht. Du kannst abschließen oder weitermachen.':'Ziel: '+t.target+' Min';
+}
+
+/* ---------- Sheets ---------- */
+function openSheet(h){
+  const p=$('#sheetP'),sc=p.scrollTop;
+  p.innerHTML=h;$('#sheet').classList.add('on');p.scrollTop=sc;
+}
+function closeSheet(){$('#sheet').classList.remove('on')}
+function addForm(){
+  return `<div class="sep"></div><b>Eigene Quest anlegen</b>
+  <label>Name<input id="nqTitle" type="text" maxlength="60" placeholder="z. B. Schaltpläne lesen"></label>
+  <div class="form2">
+    <label>Bereich<select id="nqCat">${CK.map(c=>`<option value="${c}">${CATS[c].n}</option>`).join('')}</select></label>
+    <label>Minuten<input id="nqMin" type="number" inputmode="numeric" min="1" max="600" value="20"></label>
+  </div>
+  <div class="row"><button class="btn pri" data-act="addq">Quest anlegen</button></div>`;
+}
+function pickSheet(){
+  ensurePicks();
+  const groups=CK.map(c=>`<h3 class="gh c-${c}"><span class="dot"></span>${CATS[c].n}</h3>`+
+    S.pool.filter(q=>q.cat===c).map(q=>{
+      const on=S.picks.ids.includes(q.id);
+      return `<button class="opt c-${c} ${on?'on':''}" data-act="pick" data-id="${q.id}" ${on?'disabled':''}><span>${esc(q.title)}</span><small>${q.min} Min${on?' – gewählt':''}</small></button>`;
+    }).join('')).join('');
+  return `<div class="sh-h"><span class="title">[Quest wählen]</span><button class="x" data-act="close" aria-label="Schließen">✕</button></div>${groups}${addForm()}`;
+}
+let fcat='learn';
+function freeSheet(){
+  return `<div class="sh-h"><span class="title">[Frei eintragen]</span><button class="x" data-act="close" aria-label="Schließen">✕</button></div>
+  <div class="chips" id="fchips">${CK.map(c=>`<button class="chip c-${c} ${c===fcat?'on':''}" data-act="fcat" data-c="${c}">${CATS[c].n}</button>`).join('')}</div>
+  <label>Minuten<input id="fmin" type="number" inputmode="numeric" min="1" max="600" value="25"></label>
+  <label>Beschreibung (optional)<input id="ftitle" type="text" maxlength="60"></label>
+  <div class="row"><button class="btn pri" data-act="flog">Zeit eintragen</button><button class="btn" data-act="ftimer">Timer starten</button></div>`;
+}
+
+/* ---------- Views ---------- */
+let tab='today';
+function viewToday(){
+  ensurePicks();
+  const now=new Date(),d=dk(now);
+  const L=levelInfo(totalXP()),R=rankOf(L.l),NR=nextRank(L.l),st=streak();
+  const h=now.getHours();
+  const gr=h<11?'Guten Morgen':h<18?'Guten Tag':'Guten Abend';
+  const datum=now.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
+  const metN=CK.filter(c=>minsOn(d,c)>=S.goals[c]).length;
+  const cleared=S.log.some(l=>l.date===d&&l.cat==='bonus');
+  const magDone=doneToday('mag'),diaDone=doneToday('diary'),dia=S.diary.find(x=>x.date===d);
+  const goals=CK.map(c=>{
+    const m=minsOn(d,c),g=S.goals[c],[a,b]=S.windows[c],hh=h+now.getMinutes()/60;
+    const wt=hh<a?`Fenster öffnet um ${a} Uhr`:hh>=b?'Fenster geschlossen, ab jetzt ohne Bonus':`Fenster offen bis ${b} Uhr: +20 % XP`;
+    return `<div class="goal c-${c}">
+      <div class="gl"><b><span class="dot"></span>${CATS[c].n}</b><span class="${m>=g?'done-flag':''}">${m>=g?'Ziel erreicht – ':''}${m} / ${g} Min</span></div>
+      <div class="bar"><i style="width:${Math.min(100,m/g*100)}%"></i></div>
+      <div class="gw">${wt}</div></div>`;
+  }).join('');
+  const picks=S.picks.ids.map(id=>S.pool.find(q=>q.id===id)).filter(Boolean);
+  const quests=picks.length?picks.map(q=>{
+    const done=S.picks.done.includes(q.id);
+    return `<div class="quest c-${q.cat} ${done?'done':''}">
+      <span class="dot"></span>
+      <div class="qt"><b>${esc(q.title)}</b><small>${CATS[q.cat].n}, ${q.min} Min, ca. ${qxp(q.cat,q.min)} XP</small></div>
+      ${done?'<span class="xpgot">erledigt</span>':`<button class="ib go" data-act="qstart" data-id="${q.id}" aria-label="Timer starten">▶</button><button class="ib" data-act="qdone" data-id="${q.id}" aria-label="Als erledigt markieren">✓</button>`}
+    </div>`;
+  }).join(''):`<p class="empty">Noch keine Quests für heute. Wähle selbst oder lass würfeln. Du entscheidest, wann du sie machst.</p>`;
+  return `
+  <div class="hello"><span class="muted">${datum}</span><b>${gr}, ${esc(S.name)}.</b></div>
+  <section class="win">
+    <div class="hd"><span class="title">[Status]</span><span class="muted">Serie: ${st} ${st===1?'Tag':'Tage'}</span></div>
+    <div class="rankrow">
+      <div class="rank" style="--rc:${R.c}"><span>${R.k}</span></div>
+      <div class="rinfo"><b>Rang ${R.k}</b><span class="muted">${R.t}${NR?', Rang '+NR.k+' ab Level '+NR.at:''}</span></div>
+      <div class="lv"><small>Level</small><b>${L.l}</b></div>
+    </div>
+    <div class="bar xp"><i style="width:${L.cur/L.need*100}%"></i></div>
+    <div class="xpt"><span>${L.cur} / ${L.need} XP</span><span>noch ${L.need-L.cur} XP bis Level ${L.l+1}</span></div>
+  </section>
+  ${cleared?`<div class="banner">Tages-Dungeon geklärt. +${CLEAR_BONUS} XP Bonus sind verbucht.</div>`:
+    `<div class="hint">Tages-Dungeon: Erreiche alle drei Tagesziele für +${CLEAR_BONUS} XP. ${metN===0?'Fang mit dem kleinsten an.':`Schon ${metN} von 3 geschafft.`}</div>`}
+  <section class="win">
+    <div class="hd"><span class="title">[Tagesziele]</span></div>${goals}
+  </section>
+  <section class="win">
+    <div class="hd"><span class="title">[Tagesquests]</span><span class="muted">${S.picks.done.length} / ${picks.length}</span></div>
+    ${quests}
+    <div class="row">
+      <button class="btn pri" data-act="openpick">Quest wählen</button>
+      <button class="btn" data-act="dice">Würfeln</button>
+      <button class="btn" data-act="openfree">Frei eintragen</button>
+    </div>
+  </section>
+  <section class="win">
+    <div class="hd"><span class="title">[Abendritual]</span><span class="muted">vor dem Schlafen</span></div>
+    <div class="quest c-evening ${magDone?'done':''}">
+      <span class="dot"></span>
+      <div class="qt"><b>Magnesium nehmen</b><small>${magDone?'Heute erledigt':'+'+EVENING_XP.mag+' XP'}</small></div>
+      ${magDone?'<span class="xpgot">erledigt</span>':'<button class="ib go" data-act="mag" aria-label="Magnesium genommen">✓</button>'}
+    </div>
+    <div class="quest c-evening ${diaDone?'done':''}">
+      <span class="dot"></span>
+      <div class="qt"><b>Tagebuch schreiben</b><small>${diaDone?'Eintrag gespeichert, du kannst ihn bearbeiten':'Tag reflektieren, +'+EVENING_XP.diary+' XP'}</small></div>
+      <button class="ib ${diaDone?'':'go'}" data-act="opendiary" data-date="${d}" aria-label="${diaDone?'Eintrag bearbeiten':'Tagebuch schreiben'}">✎</button>
+    </div>
+    ${h>=20&&!(magDone&&diaDone)?'<div class="gw">Es ist Abend: Magnesium und Tagebuch warten noch auf dich.</div>':''}
+  </section>`;
+}
+function viewStatus(){
+  const tot={learn:0,med:0,sport:0};
+  S.log.forEach(l=>{if(tot[l.cat]!==undefined)tot[l.cat]+=l.min});
+  const mx=Math.max(1,...Object.values(tot));
+  const stats=CK.map(c=>`<div class="stat c-${c}">
+    <div class="gl"><b><span class="dot"></span>${CATS[c].stat}</b><span>${10+Math.floor(tot[c]/20)}</span></div>
+    <div class="bar"><i style="width:${tot[c]/mx*100}%"></i></div>
+    <div class="gw">${CATS[c].n}: ${fmtMin(tot[c])} insgesamt</div></div>`).join('');
+  const days=[];
+  for(let i=6;i>=0;i--){
+    const dt=new Date();dt.setDate(dt.getDate()-i);const k=dk(dt);
+    days.push({w:dt.toLocaleDateString('de-DE',{weekday:'short'}),m:{learn:minsOn(k,'learn'),med:minsOn(k,'med'),sport:minsOn(k,'sport')}});
+  }
+  const dmax=Math.max(60,...days.map(x=>x.m.learn+x.m.med+x.m.sport));
+  const wkTotal=days.reduce((a,x)=>a+x.m.learn+x.m.med+x.m.sport,0);
+  const chart=days.map(x=>`<div class="col"><div class="stack">${['sport','med','learn'].map(c=>`<i class="c-${c}" style="height:${x.m[c]/dmax*100}%"></i>`).join('')}</div><span>${x.w}</span></div>`).join('');
+  const last=S.log.slice().sort((a,b)=>b.t-a.t).slice(0,8);
+  const rows=last.length?last.map(l=>{
+    const dt=new Date(l.t),ts=pad(dt.getDate())+'.'+pad(dt.getMonth()+1)+'. '+pad(dt.getHours())+':'+pad(dt.getMinutes());
+    const sp=!CK.includes(l.cat);
+    return `<div class="logrow ${sp?'c-evening':'c-'+l.cat}">
+      <span class="dot" ${l.cat==='bonus'?'style="background:var(--good)"':''}></span>
+      <div class="qt"><b>${esc(l.title)}</b><small>${ts}${l.min?', '+l.min+' Min':''}</small></div>
+      <b class="xpgot" style="color:var(--good)">+${l.xp}</b>
+      <button class="ib" data-act="dellog" data-id="${l.id}" aria-label="Eintrag löschen">✕</button></div>`;
+  }).join(''):'<p class="empty">Noch keine Einträge. Dein erster Eintrag steht ein Tippen entfernt.</p>';
+  const dEntries=S.diary.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,14);
+  const diaryRows=dEntries.length?dEntries.map(e=>{
+    const dt=new Date(e.date+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'numeric'});
+    const sn=e.a.length>70?e.a.slice(0,70)+'…':e.a;
+    return `<button class="opt c-evening" data-act="opendiary" data-date="${e.date}"><span>${MOODS[e.mood-1]} ${esc(sn)}</span><small>${dt}</small></button>`;
+  }).join(''):'<p class="empty">Noch kein Eintrag. Schreibe heute Abend den ersten unter „Heute“.</p>';
+  return `
+  <section class="win"><div class="hd"><span class="title">[Attribute]</span></div>${stats}</section>
+  <section class="win"><div class="hd"><span class="title">[Tagebuch]</span><span class="muted">${S.diary.length} ${S.diary.length===1?'Eintrag':'Einträge'}</span></div>${diaryRows}</section>
+  <section class="win"><div class="hd"><span class="title">[Letzte 7 Tage]</span><span class="muted">${fmtMin(wkTotal)}</span></div>
+    <div class="wk">${chart}</div>
+    <div class="legend">${CK.map(c=>`<span class="c-${c}"><i class="dot"></i>${CATS[c].n}</span>`).join('')}</div></section>
+  <section class="win"><div class="hd"><span class="title">[Verlauf]</span></div>${rows}</section>`;
+}
+function viewSettings(){
+  const sel=(c,i)=>`<input type="number" inputmode="numeric" min="0" max="24" value="${S.windows[c][i]}" data-set="win${i}" data-c="${c}" aria-label="${CATS[c].n} Fenster ${i?'Ende':'Start'}">`;
+  return `
+  <section class="win"><div class="hd"><span class="title">[Profil]</span></div>
+    <label>Name<input type="text" maxlength="30" value="${esc(S.name)}" data-set="name"></label>
+    <label>Darstellung<select data-set="theme">
+      ${[['auto','Automatisch'],['light','Hell'],['dark','Dunkel']].map(o=>`<option value="${o[0]}" ${S.theme===o[0]?'selected':''}>${o[1]}</option>`).join('')}
+    </select></label>
+  </section>
+  <section class="win"><div class="hd"><span class="title">[Ziele und Rahmenzeiten]</span></div>
+    <p class="muted" style="margin-top:0">Tagesziel in Minuten. Das Zeitfenster (Uhrzeit von bis) ist keine Pflicht: Wer darin trainiert, lernt oder meditiert, bekommt 20 % mehr XP.</p>
+    ${CK.map(c=>`<div class="goal c-${c}"><div class="gl"><b><span class="dot"></span>${CATS[c].n}</b></div>
+      <div class="form2" style="grid-template-columns:1fr 1fr 1fr">
+        <label>Ziel (Min)<input type="number" inputmode="numeric" min="1" max="600" value="${S.goals[c]}" data-set="goal" data-c="${c}"></label>
+        <label>Fenster ab<br>${sel(c,0)}</label>
+        <label>Fenster bis<br>${sel(c,1)}</label>
+      </div></div>`).join('')}
+  </section>
+  <section class="win"><div class="hd"><span class="title">[Quest-Vorrat]</span></div>
+    ${S.pool.map(q=>`<div class="pool c-${q.cat}"><span class="dot"></span><span>${esc(q.title)} <small class="muted">(${q.min} Min)</small></span><button class="ib" data-act="delq" data-id="${q.id}" aria-label="Quest löschen">✕</button></div>`).join('')||'<p class="empty">Der Vorrat ist leer. Lege unter „Heute“ eigene Quests an.</p>'}
+  </section>
+  <section class="win"><div class="hd"><span class="title">[Daten]</span></div>
+    <p class="muted" style="margin-top:0">Deine Daten liegen nur in diesem Browser. Mach ab und zu ein Backup.</p>
+    <div class="row"><button class="btn" data-act="export">Backup anzeigen</button><button class="btn" data-act="import">Backup einlesen</button></div>
+    <div class="row"><button class="btn danger" data-act="reset">Alles zurücksetzen</button></div>
+  </section>`;
+}
+function render(){
+  $('#app').innerHTML=tab==='today'?viewToday():tab==='status'?viewStatus():viewSettings();
+  document.querySelectorAll('nav button').forEach(b=>{
+    if(b.dataset.t===tab)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
+  });
+  applyTheme();
+}
+function applyTheme(){
+  const r=document.documentElement;
+  if(S.theme==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',S.theme);
+}
+
+/* ---------- Events ---------- */
+document.addEventListener('click',e=>{
+  if(e.target.id==='sheet'){closeSheet();return}
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act,id=b.dataset.id;
+  ensurePicks();
+  switch(a){
+    case 'tab':tab=b.dataset.t;render();window.scrollTo(0,0);break;
+    case 'close':closeSheet();break;
+    case 'openpick':openSheet(pickSheet());break;
+    case 'pick':
+      if(!S.picks.ids.includes(id))S.picks.ids.push(id);
+      save();openSheet(pickSheet());render();break;
+    case 'dice':{
+      let added=0;
+      CK.forEach(c=>{
+        const has=S.picks.ids.some(i=>{const q=S.pool.find(x=>x.id===i);return q&&q.cat===c});
+        if(has)return;
+        const opts=S.pool.filter(q=>q.cat===c);
+        if(opts.length){S.picks.ids.push(opts[Math.floor(Math.random()*opts.length)].id);added++}
+      });
+      save();render();toast(added?'Gewürfelt: Deine Quests für heute stehen.':'Du hast schon für jeden Bereich eine Quest.');break;}
+    case 'addq':{
+      const title=$('#nqTitle').value.trim(),cat=$('#nqCat').value,min=clamp(parseInt($('#nqMin').value)||0,1,600);
+      if(!title){toast('Gib der Quest einen Namen.');return}
+      const q={id:'q'+(S.nextId++),cat,title,min};
+      S.pool.push(q);S.picks.ids.push(q.id);save();openSheet(pickSheet());render();toast('Quest angelegt und für heute gewählt.');break;}
+    case 'delq':
+      S.pool=S.pool.filter(q=>q.id!==id);
+      S.picks.ids=S.picks.ids.filter(i=>i!==id);S.picks.done=S.picks.done.filter(i=>i!==id);
+      save();render();break;
+    case 'qdone':{
+      const q=S.pool.find(x=>x.id===id);if(!q||S.picks.done.includes(id))return;
+      const r=addLog({cat:q.cat,min:q.min,title:q.title});
+      S.picks.done.push(id);save();render();notify(r);break;}
+    case 'qstart':{
+      const q=S.pool.find(x=>x.id===id);if(q)startTimer(q.cat,q.title,q.id,q.min);break;}
+    case 'openfree':openSheet(freeSheet());break;
+    case 'fcat':
+      fcat=b.dataset.c;
+      document.querySelectorAll('#fchips .chip').forEach(x=>x.classList.toggle('on',x.dataset.c===fcat));break;
+    case 'flog':{
+      const min=clamp(parseInt($('#fmin').value)||0,1,600),t=$('#ftitle').value.trim();
+      const r=addLog({cat:fcat,min,title:t||CATS[fcat].n});
+      closeSheet();render();notify(r);break;}
+    case 'ftimer':{
+      const min=clamp(parseInt($('#fmin').value)||25,1,600),t=$('#ftitle').value.trim();
+      startTimer(fcat,t||CATS[fcat].n,null,min);break;}
+    case 'mag':{
+      if(doneToday('mag'))return;
+      const r=addSpecial('mag','Magnesium genommen');render();notify(r);break;}
+    case 'opendiary':openSheet(diarySheet(b.dataset.date));break;
+    case 'mood':
+      dMood=parseInt(b.dataset.m);
+      document.querySelectorAll('#mchips .chip').forEach(x=>x.classList.toggle('on',parseInt(x.dataset.m)===dMood));break;
+    case 'savediary':{
+      const date=b.dataset.date,A=$('#dA').value.trim(),B=$('#dB').value.trim(),C=$('#dC').value.trim();
+      if(A.length<10){toast('Schreib ein paar Sätze dazu, wie dein Tag war.');return}
+      S.diary=S.diary.filter(x=>x.date!==date);
+      S.diary.push({date,mood:dMood,a:A,b:B,c:C,t:Date.now()});
+      let r=null;
+      if(date===dk()&&!doneToday('diary'))r=addSpecial('diary','Tagebuch geschrieben');
+      save();closeSheet();render();
+      if(r)notify(r);else toast('Eintrag gespeichert.');break;}
+    case 'timerStop':stopTimer();break;
+    case 'timerCancel':S.timer=null;save();syncTimer();toast('Timer verworfen. Es wurde nichts verbucht.');break;
+    case 'dellog':S.log=S.log.filter(l=>l.id!==id);save();render();break;
+    case 'export':
+      openSheet(`<div class="sh-h"><span class="title">[Backup]</span><button class="x" data-act="close" aria-label="Schließen">✕</button></div>
+        <p class="muted" style="margin-top:0">Kopiere diesen Text und speichere ihn irgendwo sicher.</p>
+        <textarea readonly id="bk">${esc(JSON.stringify(S))}</textarea>
+        <div class="row"><button class="btn pri" data-act="selbk">Alles markieren</button></div>`);break;
+    case 'selbk':{const t=$('#bk');t.focus();t.select();break;}
+    case 'import':
+      openSheet(`<div class="sh-h"><span class="title">[Backup einlesen]</span><button class="x" data-act="close" aria-label="Schließen">✕</button></div>
+        <p class="muted" style="margin-top:0">Füge deinen Backup-Text ein. Die aktuellen Daten werden ersetzt.</p>
+        <textarea id="bkin"></textarea>
+        <div class="row"><button class="btn pri" data-act="doimport">Einlesen</button></div>`);break;
+    case 'doimport':
+      try{
+        const o=JSON.parse($('#bkin').value);
+        if(!o||o.v!==1||!Array.isArray(o.log)||!Array.isArray(o.pool))throw 0;
+        S=Object.assign(defaults(),o);save();closeSheet();syncTimer();render();toast('Backup eingelesen.');
+      }catch(err){toast('Das ist kein gültiges Backup.')}
+      break;
+    case 'reset':
+      openSheet(`<div class="sh-h"><span class="title">[Zurücksetzen]</span><button class="x" data-act="close" aria-label="Schließen">✕</button></div>
+        <p>Level, XP, Verlauf und eigene Quests werden gelöscht. Das lässt sich nicht rückgängig machen.</p>
+        <div class="row"><button class="btn danger" data-act="doreset">Alles löschen</button><button class="btn" data-act="close">Abbrechen</button></div>`);break;
+    case 'doreset':S=defaults();save();closeSheet();syncTimer();render();toast('Alles zurückgesetzt.');break;
+  }
+});
+document.addEventListener('change',e=>{
+  const t=e.target,k=t.dataset.set;if(!k)return;
+  const c=t.dataset.c;
+  if(k==='name')S.name=t.value.trim()||'David';
+  else if(k==='theme'){S.theme=t.value;applyTheme()}
+  else if(k==='goal'){S.goals[c]=clamp(parseInt(t.value)||1,1,600);t.value=S.goals[c]}
+  else if(k==='win0'||k==='win1'){
+    const i=k==='win0'?0:1;
+    let v=clamp(parseInt(t.value)||0,0,24);
+    const w=S.windows[c].slice();w[i]=v;
+    if(w[0]>=w[1]){toast('Das Fenster muss mit einer früheren Startzeit beginnen.');t.value=S.windows[c][i];return}
+    S.windows[c]=w;t.value=v;
+  }
+  save();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){updateTimer();if(tab==='today'&&!$('#sheet').classList.contains('on'))render()}});
+setInterval(()=>{if(S.timer)updateTimer()},1000);
+
+ensurePicks();save();render();syncTimer();
+})();
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+</script>
+</body>
+</html>
